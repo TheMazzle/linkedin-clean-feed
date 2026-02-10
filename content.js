@@ -133,13 +133,22 @@
       hideElement(post);
     }
 
-    // 6. Promoted messages in messaging inbox (LinkedIn Offer, Sponsored, etc.)
+    // 6. Promoted messages in messaging inbox + overlay popup
     const msgPills = root.querySelectorAll(".msg-conversation-card__pill");
     for (const pill of msgPills) {
       const text = (pill.textContent || "").trim().toLowerCase();
       if (PROMOTED_MSG_LABELS.includes(text)) {
+        // Full messaging page: parent is li.msg-conversation-listitem
         const listItem = pill.closest("li.msg-conversation-listitem");
-        if (listItem) hideElement(listItem);
+        if (listItem) {
+          hideElement(listItem);
+          continue;
+        }
+        // Messaging overlay popup: parent is div.msg-overlay-list-bubble__convo-card-container--v2
+        const overlayCard = pill.closest(
+          ".msg-overlay-list-bubble__convo-card-container--v2, .msg-overlay-list-bubble__convo-card-container"
+        );
+        if (overlayCard) hideElement(overlayCard);
       }
     }
 
