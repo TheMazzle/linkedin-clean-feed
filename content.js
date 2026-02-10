@@ -16,6 +16,18 @@
 
   const SUGGESTED_LABELS = ["suggested", "voorgesteld", "suggéré", "sugerido"];
 
+  // Promoted messaging pill labels (appear in msg-conversation-card__pill)
+  const PROMOTED_MSG_LABELS = [
+    "linkedin offer",
+    "linkedin-aanbieding",
+    "offre linkedin",
+    "oferta de linkedin",
+    "linkedin-angebot",
+    "sponsored",
+    "gesponsord",
+    "sponsorisé",
+  ];
+
   let enabled = true;
   let blockedCount = 0;
 
@@ -121,7 +133,17 @@
       hideElement(post);
     }
 
-    // 6. "Add to your feed" suggestions
+    // 6. Promoted messages in messaging inbox (LinkedIn Offer, Sponsored, etc.)
+    const msgPills = root.querySelectorAll(".msg-conversation-card__pill");
+    for (const pill of msgPills) {
+      const text = (pill.textContent || "").trim().toLowerCase();
+      if (PROMOTED_MSG_LABELS.includes(text)) {
+        const listItem = pill.closest("li.msg-conversation-listitem");
+        if (listItem) hideElement(listItem);
+      }
+    }
+
+    // 7. "Add to your feed" suggestions
     const addToFeed = root.querySelectorAll(
       '.feed-shared-news-module, [data-view-name="feed-news-module"]'
     );
