@@ -72,6 +72,6 @@ aside[data-view-name="feed-right-rail"] .feed-follows-module {
 }
 
 /* Class used by content.js to hide dynamic elements */
-.linkedin-ad-blocker-hidden {
+.linkedin-clean-feed-hidden {
   display: none !important;
 }

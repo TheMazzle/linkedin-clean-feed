@@ -60,16 +60,16 @@
   }
 
   function hideElement(el) {
-    if (el && !el.classList.contains("linkedin-ad-blocker-hidden")) {
-      el.classList.add("linkedin-ad-blocker-hidden");
+    if (el && !el.classList.contains("linkedin-clean-feed-hidden")) {
+      el.classList.add("linkedin-clean-feed-hidden");
       blockedCount++;
       chrome.storage.local.set({ blockedCount });
     }
   }
 
   function showElement(el) {
-    if (el && el.classList.contains("linkedin-ad-blocker-hidden")) {
-      el.classList.remove("linkedin-ad-blocker-hidden");
+    if (el && el.classList.contains("linkedin-clean-feed-hidden")) {
+      el.classList.remove("linkedin-clean-feed-hidden");
     }
   }
 
@@ -176,7 +176,7 @@
   }
 
   function showAllHidden() {
-    const hidden = document.querySelectorAll(".linkedin-ad-blocker-hidden");
+    const hidden = document.querySelectorAll(".linkedin-clean-feed-hidden");
     for (const el of hidden) {
       showElement(el);
     }
