@@ -265,17 +265,20 @@
       }
     }
 
-    // Text-based fallback: scan spans only within actor/header areas of feed posts
-    for (const actorSel of ACTOR_AREA_SELECTORS) {
-      const actorSpans = root.querySelectorAll(
-        `.feed-shared-update-v2 ${actorSel} span, .occludable-update ${actorSel} span, [data-urn^="urn:li:activity"] ${actorSel} span`
-      );
-      for (const span of actorSpans) {
-        const text = (span.textContent || "").trim().toLowerCase();
-        if (PROMOTED_LABELS.includes(text)) {
-          const post = findFeedPostParent(span);
-          if (post) hideElement(post);
-        }
+    // Text-based fallback: scan all spans inside feed posts, but only match
+    // leaf-node spans whose entire text is a promoted label (excludes post body content)
+    const feedSpans = root.querySelectorAll(
+      '.feed-shared-update-v2 span, .occludable-update span, [data-urn^="urn:li:activity"] span'
+    );
+    for (const span of feedSpans) {
+      const text = (span.textContent || "").trim().toLowerCase();
+      if (
+        PROMOTED_LABELS.includes(text) &&
+        span.children.length === 0 &&
+        !span.closest(".feed-shared-text, .feed-shared-update-v2__description, .update-components-text")
+      ) {
+        const post = findFeedPostParent(span);
+        if (post) hideElement(post);
       }
     }
   }
