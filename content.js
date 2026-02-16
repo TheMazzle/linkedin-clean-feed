@@ -230,6 +230,18 @@
 
   // --- Category Scan Functions ---
 
+  // Selectors that target the post header/actor area (where "Promoted" labels appear)
+  const ACTOR_AREA_SELECTORS = [
+    ".feed-shared-actor",
+    ".update-components-actor",
+    ".feed-shared-header",
+    ".update-components-header",
+  ];
+
+  function isInActorArea(el) {
+    return ACTOR_AREA_SELECTORS.some((sel) => el.closest(sel));
+  }
+
   function scanPromotedPosts(root) {
     // Via sub-description text
     const subDescriptions = root.querySelectorAll(
@@ -242,26 +254,28 @@
       }
     }
 
-    // Via visually hidden spans
+    // Via visually hidden spans — only within the actor/header area
     const hiddenSpans = root.querySelectorAll(
-      'span.visually-hidden, span[aria-hidden="false"]'
+      'span.visually-hidden'
     );
     for (const span of hiddenSpans) {
-      if (isPromotedText(span.textContent || "")) {
+      if (isPromotedText(span.textContent || "") && isInActorArea(span)) {
         const post = findFeedPostParent(span);
         if (post) hideElement(post);
       }
     }
 
-    // Text-based fallback: scan all spans inside feed posts for promoted labels
-    const feedSpans = root.querySelectorAll(
-      '.feed-shared-update-v2 span, .occludable-update span, [data-urn^="urn:li:activity"] span'
-    );
-    for (const span of feedSpans) {
-      const text = (span.textContent || "").trim().toLowerCase();
-      if (PROMOTED_LABELS.includes(text)) {
-        const post = findFeedPostParent(span);
-        if (post) hideElement(post);
+    // Text-based fallback: scan spans only within actor/header areas of feed posts
+    for (const actorSel of ACTOR_AREA_SELECTORS) {
+      const actorSpans = root.querySelectorAll(
+        `.feed-shared-update-v2 ${actorSel} span, .occludable-update ${actorSel} span, [data-urn^="urn:li:activity"] ${actorSel} span`
+      );
+      for (const span of actorSpans) {
+        const text = (span.textContent || "").trim().toLowerCase();
+        if (PROMOTED_LABELS.includes(text)) {
+          const post = findFeedPostParent(span);
+          if (post) hideElement(post);
+        }
       }
     }
   }
